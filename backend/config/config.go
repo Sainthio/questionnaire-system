@@ -34,8 +34,8 @@ func LoadConfig() *Config {
 		Database: DatabaseConfig{
 			Host:     "localhost",
 			Port:     "3306",
-			User:     "root",
-			Password: "shiosakana123", //MySQL用户密码
+			User:     "qsuser",
+			Password: "qq123123", //MySQL用户密码
 			DBName:   "questionnaire_db",
 		},
 	}
