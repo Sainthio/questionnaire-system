@@ -19,17 +19,17 @@ const stats = reactive({
 
 // 获取系统统计数据
 const getSystemStats = async () => {
+  console.log('正在获取系统统计数据...')
   try {
-    console.log('正在获取系统统计数据...')
-    
-    // 直接从统计接口获取所有数据
     const statsResponse = await api.get('/questionnaire/stats')
     console.log('统计接口返回数据:', statsResponse)
     
-    if (statsResponse && statsResponse.data) {
-      stats.users = statsResponse.data.user_count || 0
-      stats.questionnaires = statsResponse.data.questionnaire_count || 0
-      stats.submissions = statsResponse.data.submission_count || 0
+    // 检查响应数据是否有效
+    if (statsResponse && statsResponse.code === 0) {
+      // 直接从响应中获取数据
+      stats.users = statsResponse.user_count || 0
+      stats.questionnaires = statsResponse.questionnaire_count || 0
+      stats.submissions = statsResponse.submission_count || 0
       
       console.log('统计数据获取成功:', stats)
     } else {
@@ -37,8 +37,9 @@ const getSystemStats = async () => {
       
       // 备用方法：获取问卷总数
       const questionnairesResponse = await api.get('/questionnaire/list?page=1&limit=1')
-      if (questionnairesResponse && questionnairesResponse.data) {
-        stats.questionnaires = questionnairesResponse.data.total || 0
+      if (questionnairesResponse && questionnairesResponse.data && questionnairesResponse.data.data) {
+        const responseData = questionnairesResponse.data.data
+        stats.questionnaires = responseData.total || 0
         
         // 使用合理的估算值
         stats.users = Math.max(5, Math.floor(stats.questionnaires / 2))

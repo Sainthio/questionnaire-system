@@ -23,23 +23,40 @@ export const useQuestionnaireStore = defineStore('questionnaire', {
         // 添加用户ID参数，后端可以据此返回适合该用户的问卷列表
         const response = await api.get(`/questionnaire/list?page=${page}&user_id=${userId}`)
         
-        // 确保返回的数据是有效的，如果不是则使用默认值
-        let questionnaires = response?.data?.questionnaires || []
+        console.log('问卷列表原始响应:', response)
+        console.log('response类型:', typeof response)
         
-        // 如果后端没有进行过滤，前端再次过滤：普通用户只能看到已发布的问卷或自己创建的问卷
-        if (!isAdmin && userId > 0) {
-          questionnaires = questionnaires.filter(q => 
-            q.is_published || q.created_by === userId
-          )
-        } else if (!isAdmin) {
-          // 未登录用户只能看到已发布的问卷
-          questionnaires = questionnaires.filter(q => q.is_published)
+        // 确保返回的数据是有效的
+        if (!response) {
+          console.error('响应为空')
+          throw new Error('响应为空')
         }
         
+        // 由于api.js中的响应拦截器已经返回了response.data，所以这里直接使用response
+        if (response.success !== true) {
+          console.error('响应数据不成功:', response.success)
+          throw new Error('响应数据不成功')
+        }
+        
+        // 正确获取后端返回的数据结构
+        const responseData = response.data
+        console.log('responseData:', responseData)
+        
+        if (!responseData) {
+          console.error('问卷列表数据结构错误:', responseData)
+          throw new Error('返回数据结构错误')
+        }
+        
+        let questionnaires = responseData.questionnaires || []
+        console.log('解析后的问卷列表:', questionnaires)
+        
+        // 更新状态
         this.questionnaireList = questionnaires
-        this.totalCount = response?.data?.total || questionnaires.length
-        this.currentPage = response?.data?.page || page
-        this.pageSize = response?.data?.page_size || 10
+        this.totalCount = responseData.total || questionnaires.length
+        this.currentPage = responseData.page || page
+        this.pageSize = responseData.page_size || 10
+        
+        console.log('获取到问卷列表:', this.questionnaireList)
         
         return Promise.resolve(response)
       } catch (error) {
