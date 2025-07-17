@@ -3,9 +3,6 @@ import axios from 'axios'
 // 创建带有超时设置的axios实例
 export const api = axios.create({
   baseURL: '/api',
-  /*在api.js中，确保baseURL指向正确的后端地址：// 修改为您的服务器域名或IP
-baseURL: 'http://your-server-domain-or-ip/api'
-*/
   timeout: 30000, // 30秒超时
   headers: {
     'Content-Type': 'application/json',
