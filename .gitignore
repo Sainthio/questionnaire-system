@@ -1,0 +1,29 @@
+# 依赖目录
+/frontend/questionnaire-app/node_modules/
+/frontend/questionnaire-app/dist/
+/frontend/questionnaire-app/.pnpm-store/
+
+# 编译文件
+/backend/questionnaire-server
+/backend/*.exe
+
+# 环境配置
+/backend/config.yaml
+.env
+.env.local
+
+# 日志
+*.log
+/logs/
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# IDE配置
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
